@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import useDebounce from "../Hooks/UseDebounce"
 
-const Input = ({ results, setResults }) => {
+const Input = ({ results, setResults, page }) => {
     const [showList, setShowList] = useState(false)
     const [search, setSearch] = useState('')
     const listRef = useRef(null)
@@ -30,7 +30,7 @@ const Input = ({ results, setResults }) => {
         const queryParams = { name: debounce };
         const queryString = query(queryParams);
         try {
-            const res = await fetch(`https://rickandmortyapi.com/api/character/?${queryString}`)
+            const res = await fetch(`https://rickandmortyapi.com/api/character/?${queryString}&page=${page}`)
 
             if (!res.ok) {
                 throw new Error(`HTTP error! Status: ${res.status}`);
@@ -53,7 +53,7 @@ const Input = ({ results, setResults }) => {
         return()=>{
             abort = true
         }
-    }, [debounce])
+    }, [debounce, page])
 
 
     useEffect(() => {
@@ -69,7 +69,7 @@ const Input = ({ results, setResults }) => {
             <div  className='m-8 relative text-center '>
                 <input className='border rounded-md w-[200px] h-[30px] p-1.5 focus:outline-none focus:border-2 focus:border-slate-500' ref={inpRef}  type="text" placeholder="search" onChange={handleChange} value={search} onFocus={() => setShowList(true)} />
 
-               { results.length==0 ? <div>NO RESULTS AVAILABLE WITH THIS NAME! Or SERVER IS DOWN!</div>: ''}
+               {/* { results.length==0 ? <div>NO RESULTS AVAILABLE!</div>: ''} */}
 
                 {showList && <div className=" overflow-scroll h-[500px] w-[500px] bg-white absolute top-[110%] left-[50%] translate-x-[-50%]" ref={listRef}>
                     {results.map((item, index) => {
